@@ -1,10 +1,33 @@
-import React from "react";
+import React, { useState, useEffect }from "react";
+import ImageCard from "./components/ImageCard";
+import * as dotenv from 'dotenv';
+dotenv.config()
+// import "./tailwind.output.css";
 
 function App() {
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [term, setTerm] = useState('');
+
+  useEffect(() => {
+    console.log(process.env)
+    // fetch(`https://pixabay.com/api/?key=${process.env.
+    // REACT_APP_PIXABAY_API_KEY}&q=${term}&image_type=photo`)
+    fetch(`https://pixabay.com/api/?key=43489022-a4596227fccb6e2b7267941e1&q=${term}&image_type=photo&pretty=true`)
+    .then(res=>res.json())
+    .then(data=> {
+      setImages(data.hits);
+      setIsLoading(false)
+    })
+    .catch(err=>console.log(err));
+  }, []);
   return (
-    <div>
-      <h1 className="text-6xl">hello World</h1>
-      <h1 className="text-3xl">hiii</h1>
+    <div className="container mx-auto">
+      <div className="grid grid-cols-3 gap-4">
+        {images.map(image=>(
+          <ImageCard key={image.id} image={image}/>
+        ))}
+      </div>
     </div>
   );
 }
